@@ -19,7 +19,6 @@ func main() {
 
 	api.Init().RegisterRoutes(mux)
 
-	// TODO Этап 2: POST /echo            -> тело запроса без изменений
 	// TODO Этап 3: POST /echo            -> на application/json разобрать {"message": "..."} и вернуть JSON
 	// TODO Этап 4: POST /messages        -> сохранить в памяти, 201
 	// TODO Этап 5: GET /messages         -> все сообщения, новые сверху
