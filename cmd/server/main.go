@@ -1,11 +1,7 @@
-// Заготовка сервера. Закрывайте этапы по одному, пока не позеленеет go test ./tests/ -v
-//
-// Запуск: go run ./cmd/server — порт берётся из PORT, по умолчанию 8080.
-// Панель уже раздаётся: откройте http://localhost:8080/ и смотрите, как этапы
-// зеленеют по ходу работы.
 package main
 
 import (
+	"entrytest/internal/api"
 	"log"
 	"net/http"
 	"os"
@@ -19,11 +15,10 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// Панель из frontend/. Каталог берётся относительно рабочего, поэтому
-	// запускайте из корня модуля: go run ./cmd/server
 	mux.Handle("/", http.FileServer(http.Dir("frontend")))
 
-	// TODO Этап 1: GET /health           -> 200, тело "ok"
+	api.Init().RegisterRoutes(mux)
+
 	// TODO Этап 2: POST /echo            -> тело запроса без изменений
 	// TODO Этап 3: POST /echo            -> на application/json разобрать {"message": "..."} и вернуть JSON
 	// TODO Этап 4: POST /messages        -> сохранить в памяти, 201
