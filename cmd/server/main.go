@@ -20,7 +20,6 @@ func main() {
 
 	api.Init(store.New()).RegisterRoutes(mux)
 
-	// TODO Этап 5: GET /messages         -> все сообщения, новые сверху
 	// TODO Этап 6: DELETE /messages/{id} -> 204, либо 404 если такого нет
 
 	log.Printf("сервер слушает http://localhost:%s", port)

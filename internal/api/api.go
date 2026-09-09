@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type API struct{
+type API struct {
 	store *store.MessageStore
 }
 
@@ -17,4 +17,5 @@ func (a *API) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /health", a.health)
 	mux.HandleFunc("POST /echo", a.echo)
 	mux.HandleFunc("POST /messages", a.createMessage)
+	mux.HandleFunc("GET /messages", a.listMessages)
 }

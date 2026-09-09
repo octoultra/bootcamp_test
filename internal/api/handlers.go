@@ -61,3 +61,8 @@ func (a *API) createMessage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(m)
 }
+
+func (a *API) listMessages(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(a.store.List())
+}
