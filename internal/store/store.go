@@ -48,7 +48,10 @@ func (s *MessageStore) Delete(id int64) bool {
 
 	for i, m := range s.messages {
 		if m.ID == id {
-			s.messages = append(s.messages[:i], s.messages[i+1:]...)
+			out := make([]message.Message, 0, len(s.messages)-1)
+			out = append(out, s.messages[:i]...)
+			out = append(out, s.messages[i+1:]...)
+			s.messages = out
 			return true
 		}
 	}

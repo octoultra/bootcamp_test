@@ -3,12 +3,25 @@ package api
 import (
 	"encoding/json"
 	"io"
+	"mime"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
+const maxBodyBytes = 1024 * 1024 // 1 MB
+
 func (a *API) health(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	io.WriteString(w, "ok")
+}
+
+func isJSONContentType(r *http.Request) bool {
+	mediaType, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err != nil {
+		return false
+	}
+	return mediaType == "application/json"
 }
 
 type echoPayload struct {
@@ -16,6 +29,7 @@ type echoPayload struct {
 }
 
 func (a *API) echo(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
 	defer r.Body.Close()
 
 	body, err := io.ReadAll(r.Body)
@@ -24,7 +38,7 @@ func (a *API) echo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Header.Get("Content-Type") != "application/json" {
+	if !isJSONContentType(r) {
 		w.Write(body)
 		return
 	}
@@ -44,6 +58,7 @@ type createMessageRequest struct {
 }
 
 func (a *API) createMessage(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxBodyBytes)
 	defer r.Body.Close()
 
 	var req createMessageRequest
@@ -51,7 +66,7 @@ func (a *API) createMessage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid json", http.StatusBadRequest)
 		return
 	}
-	if req.Message == "" {
+	if strings.TrimSpace(req.Message) == "" {
 		http.Error(w, "message must not be empty", http.StatusBadRequest)
 		return
 	}
