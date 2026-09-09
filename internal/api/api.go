@@ -18,4 +18,5 @@ func (a *API) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /echo", a.echo)
 	mux.HandleFunc("POST /messages", a.createMessage)
 	mux.HandleFunc("GET /messages", a.listMessages)
+	mux.HandleFunc("DELETE /messages/{id}", a.deleteMessage)
 }

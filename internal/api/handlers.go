@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func (a *API) health(w http.ResponseWriter, _ *http.Request) {
@@ -65,4 +66,19 @@ func (a *API) createMessage(w http.ResponseWriter, r *http.Request) {
 func (a *API) listMessages(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(a.store.List())
+}
+
+func (a *API) deleteMessage(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	if !a.store.Delete(id) {
+		http.Error(w, "message not found", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
