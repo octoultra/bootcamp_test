@@ -2,6 +2,7 @@ package main
 
 import (
 	"entrytest/internal/api"
+	"entrytest/internal/store"
 	"log"
 	"net/http"
 	"os"
@@ -17,9 +18,8 @@ func main() {
 
 	mux.Handle("/", http.FileServer(http.Dir("frontend")))
 
-	api.Init().RegisterRoutes(mux)
+	api.Init(store.New()).RegisterRoutes(mux)
 
-	// TODO Этап 4: POST /messages        -> сохранить в памяти, 201
 	// TODO Этап 5: GET /messages         -> все сообщения, новые сверху
 	// TODO Этап 6: DELETE /messages/{id} -> 204, либо 404 если такого нет
 

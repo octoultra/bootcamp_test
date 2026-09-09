@@ -37,3 +37,27 @@ func (a *API) echo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(payload)
 }
+
+type createMessageRequest struct {
+	Message string `json:"message"`
+}
+
+func (a *API) createMessage(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	var req createMessageRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid json", http.StatusBadRequest)
+		return
+	}
+	if req.Message == "" {
+		http.Error(w, "message must not be empty", http.StatusBadRequest)
+		return
+	}
+
+	m := a.store.Create(req.Message)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(m)
+}
